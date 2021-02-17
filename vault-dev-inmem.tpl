@@ -32,7 +32,6 @@ write_files:
       [Install]
       WantedBy=multi-user.target
 runcmd:
-  - systemctl restart systemd-resolved.service
   - bash /var/tmp/install-vault.sh
   - bash sleep 10
   - systemctl enable vault-license.service
