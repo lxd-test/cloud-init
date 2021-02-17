@@ -20,6 +20,5 @@ write_files:
       sleep 5
       consul license put @/etc/consul_license.hclic
 runcmd:
-  - systemctl restart systemd-resolved.service
   - bash /var/tmp/install-consul.sh
   - touch /tmp/file
