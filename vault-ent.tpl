@@ -18,8 +18,8 @@ write_files:
         sleep 2
       done
 
-      export cluster_name=${cluster_name}
-      export key_name=${cluster_name}
+      export cluster_name=${dc}
+      export key_name=${dc}
       curl -sLo /tmp/vault.sh https://raw.githubusercontent.com/kikitux/curl-bash/master/vault-ent/vault.sh
       bash /tmp/vault.sh
       sleep 5
