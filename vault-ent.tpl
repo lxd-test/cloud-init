@@ -7,9 +7,7 @@ write_files:
       #!/bin/bash
       export DC=${dc}
       export IFACE=${iface}
-      export SB_JOIN='${consul_server_sb}'
-      export SB_DRIFT='${consul_server_sb_drift}'
-      export LAN_JOIN='${consul_server_sd}'
+      export LAN_JOIN='${consul_server}'
       curl -sLo /tmp/consul.sh https://raw.githubusercontent.com/kikitux/curl-bash/master/consul-client/consul.sh
       bash /tmp/consul.sh
       unset LAN_JOIN
