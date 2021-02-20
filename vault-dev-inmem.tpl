@@ -25,6 +25,7 @@ write_files:
       After=vault.service
 
       [Service]
+      ExecStartPre=/usr/bin/timeout 10 sh -c 'while ! /usr/bin/curl http://127.0.0.1:8200/v1/sys/health ; do sleep 2 ; done'
       ExecStart=/usr/bin/curl --header "X-Vault-Token: changeme" --request PUT --data @/etc/vault_license.json http://127.0.0.1:8200/v1/sys/license
       Type=oneshot
       RemainAfterExit=yes
