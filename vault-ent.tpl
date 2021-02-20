@@ -29,7 +29,7 @@ write_files:
 
         echo waiting for vault
         while ! curl http://127.0.0.1:8200/v1/sys/health ; do sleep 2 ; done
-
+        sleep 5
         export initResult=$(VAULT_ADDR=http://127.0.0.1:8200 vault operator init -format=json -recovery-shares 1 -recovery-threshold 1 | tee init.json)
         export rootToken=$(echo $initResult | jq -r .root_token | tee rootToken)
         export recoveryKey=$(echo -n $initResult | jq -r '.recovery_keys_b64[0]' | tee recoveryKey)
@@ -44,8 +44,6 @@ write_files:
       sed -i -e "s/http:\/\/0.0.0.0/http:\/\/$IP/g" /etc/vault.d/server.hcl
       sed -i -e "s/https:\/\/0.0.0.0/https:\/\/$IP/g" /etc/vault.d/server.hcl
       service vault restart
-      echo waiting for vault
-      while ! curl http://127.0.0.1:8200/v1/sys/health ; do sleep 2 ; done
   - path: "/etc/vault_license.json"
     permissions: "0640"
     owner: "root:root"
@@ -62,6 +60,7 @@ write_files:
       After=vault.service
 
       [Service]
+      ExecStartPre=/usr/bin/timeout 30 sh -c 'while ! /usr/bin/curl http://127.0.0.1:8200/v1/sys/health ; do sleep 2 ; done'
       ExecStart=/usr/bin/curl --header @/etc/vault.d/rootTokenHeader --request PUT --data @/etc/vault_license.json http://127.0.0.1:8200/v1/sys/license
       Type=oneshot
       RemainAfterExit=yes
