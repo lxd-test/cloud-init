@@ -34,7 +34,6 @@ write_files:
       WantedBy=multi-user.target
 runcmd:
   - bash /var/tmp/install-vault.sh
-  - bash sleep 10
   - systemctl enable vault-license.service
   - systemctl start vault-license.service
   - touch /tmp/file
