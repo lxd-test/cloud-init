@@ -28,10 +28,7 @@ write_files:
         pushd /etc/vault.d/
 
         echo waiting for vault
-        while VAULT_ADDR=http://0.0.0.0:8200 vault status ; [ $? -ne 2 ];do
-          echo -n .
-          sleep 2
-        done
+        while ! curl http://127.0.0.1:8200/v1/sys/health ; do sleep 2 ; done
 
         export initResult=$(VAULT_ADDR=http://127.0.0.1:8200 vault operator init -format=json -recovery-shares 1 -recovery-threshold 1 | tee init.json)
         export rootToken=$(echo $initResult | jq -r .root_token | tee rootToken)
@@ -47,6 +44,8 @@ write_files:
       sed -i -e "s/http:\/\/0.0.0.0/http:\/\/$IP/g" /etc/vault.d/server.hcl
       sed -i -e "s/https:\/\/0.0.0.0/https:\/\/$IP/g" /etc/vault.d/server.hcl
       service vault restart
+      echo waiting for vault
+      while ! curl http://127.0.0.1:8200/v1/sys/health ; do sleep 2 ; done
   - path: "/etc/vault_license.json"
     permissions: "0640"
     owner: "root:root"
